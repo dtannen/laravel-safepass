@@ -30,7 +30,7 @@ class PasswordStrengthMeter
      */
     public function validate($attribute, $password, $parameters, $validator)
     {
-        return (head($parameters) ?: 50) <= $this->evaluate($password);
+        return (head($parameters) ?: 2) <= $this->evaluate($password);
     }
 
     /**
