@@ -2,19 +2,12 @@
 
 namespace LukasJankowski\SafePass;
 
-use ZxcvbnPhp\Matcher;
-use ZxcvbnPhp\Searcher;
+use ZxcvbnPhp\Zxcvbn;
 
 class PasswordStrengthMeter
 {
     /** @var PasswordStrengthScorer - For calculating the score of the password */
     private $scorer;
-
-    /** @var Searcher - For calculating the minimum entropy the password has */
-    private $searcher;
-
-    /** @var Matcher -  For checking the password against common attack vectors / weaknesses */
-    private $matcher;
 
     /**
      * PasswordStrengthMeter constructor.
@@ -22,11 +15,9 @@ class PasswordStrengthMeter
      * @param Searcher $searcher - For calculating the minimum entropy the password has
      * @param Matcher $matcher - For checking the password against common attack vectors / weaknesses
      */
-    public function __construct(PasswordStrengthScorer $scorer, Searcher $searcher, Matcher $matcher)
+    public function __construct(Zxcvbn $scorer)
     {
         $this->scorer = $scorer;
-        $this->searcher = $searcher;
-        $this->matcher = $matcher;
     }
 
     /**
@@ -51,11 +42,6 @@ class PasswordStrengthMeter
     {
         return strlen($password) === 0
             ? 0.00
-            : $this->scorer->score(
-                $this->searcher->getMinimumEntropy(
-                    $password,
-                    $this->matcher->getMatches($password)
-                )
-            );
+            : $this->scorer->passwordStrength($password)['score'];
     }
 }
